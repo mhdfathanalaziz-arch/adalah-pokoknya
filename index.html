@@ -164,21 +164,17 @@
             to { transform: translateY(-10px); }
         }
     </style>
-    <!-- Library Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
-    <!-- Latar Musik Kokiri Forest -->
-    <audio id="bgMusic" loop>
+    <audio id="bgMusic" loop preload="auto">
         <source src="kokiri_forest.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Kunci Gimmick Game -->
     <div id="gameKey" onclick="unlockLetter()">🔑</div>
 
     <div class="card" id="mainCard">
-        <!-- Step 1: Mulai Game Sederhana -->
         <div id="step1">
             <div class="icon-display">🔒</div>
             <h1>Surat ini terkunci...</h1>
@@ -186,7 +182,6 @@
             <button class="btn-yes" onclick="startGame()">Cari Kunci 🔍</button>
         </div>
 
-        <!-- Step 2: Halaman Confess Utama -->
         <div id="step2" class="hidden">
             <div class="icon-display">💖</div>
             <h1>I Have a Crush on You!</h1>
@@ -198,7 +193,6 @@
             </div>
         </div>
 
-        <!-- Step 3: Respons Sukses -->
         <div id="step3" class="hidden">
             <div class="icon-display">🥳</div>
             <h1>Yeay! Best Day Ever! 🎉</h1>
@@ -239,14 +233,23 @@
             setTimeout(() => { particle.remove(); }, 800);
         });
 
-        // Memulai Game Menangkap Kunci
+        // Memulai Game Menangkap Kunci + LANGSUNG PUTAR LAGU
         function startGame() {
+            // 1. Sembunyikan halaman awal
             document.getElementById('step1').classList.add('hidden');
+            
+            // 2. Munculkan game kunci melayang
             const key = document.getElementById('gameKey');
             key.style.display = 'block';
             moveKey();
-            // Kunci akan berpindah tempat secara berkala agar seru untuk ditangkap
             keyInterval = setInterval(moveKey, 1400);
+
+            // 3. --- PERBAIKAN: MUSIK LANGSUNG DI-PLAY DI SINI ---
+            const musik = document.getElementById('bgMusic');
+            musik.load(); // Memastikan file ter-refresh
+            musik.play().catch(err => {
+                console.log("Musik tertahan sistem browser otomatis, akan dicoba ulang di interaksi berikutnya.", err);
+            });
         }
 
         // Fungsi menggerakkan kunci secara acak di layar browser
@@ -267,9 +270,9 @@
             document.getElementById('step2').classList.remove('hidden');
             triggerCardBounce();
 
-            // Memutar Lagu Kokiri Forest
+            // Memastikan musik tetap/makin mantap berputar saat surat terbuka
             const musik = document.getElementById('bgMusic');
-            musik.play().catch(err => console.log("Musik tertahan browser:", err));
+            musik.play().catch(err => console.log("Audio aman:", err));
         }
 
         // Gimmick Tombol No Mengecil (Sistem Android Touch-Friendly)
